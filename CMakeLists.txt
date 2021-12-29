@@ -32,6 +32,14 @@ include(GenerateBuiltinsList)
 
 check_python_module_exists(PYTHON_HAVE_MARKUPSAFE markupsafe)
 
+if (NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if (NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 90)
+endif()
+
 set(is-freebsd $<PLATFORM_ID:FreeBSD>)
 set(is-darwin $<PLATFORM_ID:Darwin>)
 set(is-linux $<PLATFORM_ID:Linux>)
@@ -130,7 +138,6 @@ target_link_libraries(d8
     v8_inspector
     v8_libplatform
 )
-target_compile_features(d8 PUBLIC cxx_std_14 c_std_90)
 
 # more granular library support
 add_library(v8-i18n-support OBJECT)
@@ -246,7 +253,6 @@ list(REMOVE_ITEM strings-sources v8/src/strings/char-predicates.cc)
 
 list(APPEND snapshot-sources v8/src/snapshot/embedded/embedded-data.cc)
 list(APPEND wasm-sources ${wasm-baseline-sources})
-target_compile_features(v8-i18n-support PUBLIC cxx_std_14 c_std_90)
 
 add_library(v8_base_without_compiler STATIC
   $<$<AND:${is-x64},${is-posix}>:v8/src/trap-handler/handler-inside-posix.cc>
@@ -398,7 +404,6 @@ file(GLOB_RECURSE compiler-sources
   CONFIGURE_DEPENDS v8/src/compiler/*.cc
 )
 list(FILTER compiler-sources EXCLUDE REGEX ".*backend/.*/.*[.]cc$")
-target_compile_features(v8_base_without_compiler PUBLIC cxx_std_14 c_std_90)
 
 add_library(v8_compiler STATIC)
 target_sources(v8_compiler PRIVATE ${compiler-sources})
@@ -422,7 +427,6 @@ target_link_libraries(v8_compiler
   PUBLIC
     v8-bytecodes-builtin-list
 )
-target_compile_features(v8_compiler PUBLIC cxx_std_14 c_std_90)
 
 #
 # v8_initializers
@@ -492,7 +496,6 @@ target_include_directories(v8_initializers
 )
 
 target_link_libraries(v8_initializers PRIVATE v8_torque_generated v8-bytecodes-builtin-list)
-target_compile_features(v8_initializers PUBLIC cxx_std_14 c_std_90)
 
 #
 # v8_snapshot
@@ -534,7 +537,6 @@ add_custom_command(
     ${PROJECT_BINARY_DIR}/embedded.S
     ${PROJECT_BINARY_DIR}/snapshot.cc
 )
-target_compile_features(v8_snapshot PUBLIC cxx_std_14 c_std_90)
 
 #
 # v8_inspector
@@ -668,7 +670,6 @@ target_include_directories(v8_libplatform
 )
 
 target_link_libraries(v8_libplatform PRIVATE v8_libbase)
-target_compile_features(v8_libplatform PUBLIC cxx_std_14 c_std_90)
 
 #
 # v8_libsampler
@@ -686,7 +687,6 @@ target_compile_definitions(v8_libsampler PRIVATE $<${is-msvc}:_HAS_EXCEPTIONS=0>
 target_compile_options(v8_libsampler PRIVATE ${disable-exceptions})
 target_include_directories(v8_libsampler PRIVATE ${PROJECT_SOURCE_DIR}/v8)
 target_link_libraries(v8_libsampler PRIVATE v8_libbase)
-target_compile_features(v8_libsampler PUBLIC cxx_std_14 c_std_90)
 
 #
 # v8_libbase
@@ -739,7 +739,6 @@ target_link_libraries(v8_libbase
     $<${is-win}:winmm>
     $<${is-win}:dbghelp>
 )
-target_compile_features(v8_libbase PUBLIC cxx_std_14 c_std_90)
 
 #
 # bytecode_builtins_list_generator
@@ -764,7 +763,6 @@ target_include_directories(bytecode_builtins_list_generator
 )
 
 target_link_libraries(bytecode_builtins_list_generator v8_libbase)
-target_compile_features(bytecode_builtins_list_generator PUBLIC cxx_std_14 c_std_90)
 
 #
 # v8_torque_generated
@@ -870,7 +868,6 @@ target_include_directories(v8_torque_generated
     ${PROJECT_SOURCE_DIR}/v8/include
     ${PROJECT_SOURCE_DIR}/v8
 )
-target_compile_features(v8_torque_generated PUBLIC cxx_std_14 c_std_90)
 
 add_custom_command(
   COMMAND
@@ -909,7 +906,6 @@ target_sources(torque PRIVATE ${torque-program-sources})
 target_compile_options(torque PRIVATE ${enable-exceptions})
 target_include_directories(torque PRIVATE ${PROJECT_SOURCE_DIR}/v8)
 target_link_libraries(torque PRIVATE v8_libbase)
-target_compile_features(torque PUBLIC cxx_std_14 c_std_90)
 
 #
 # mksnapshot
@@ -947,4 +943,3 @@ target_include_directories(v8-adler32
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/v8/third_party/zlib>
 )
-target_compile_features(mksnapshot PUBLIC cxx_std_14 c_std_90)
