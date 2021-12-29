@@ -32,13 +32,8 @@ include(GenerateBuiltinsList)
 
 check_python_module_exists(PYTHON_HAVE_MARKUPSAFE markupsafe)
 
-if (NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
-endif()
-
-if (NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 90)
-endif()
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_STANDARD 90)
 
 set(is-freebsd $<PLATFORM_ID:FreeBSD>)
 set(is-darwin $<PLATFORM_ID:Darwin>)
